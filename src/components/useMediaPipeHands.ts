@@ -1,15 +1,18 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import '@mediapipe/camera_utils'
-import '@mediapipe/drawing_utils'
-import '@mediapipe/hands'
+import { useEffect, useRef, useState } from 'react'
+import {
+  loadMediaPipeHandsRuntime,
+  mediapipeHandsLocateFile,
+  type MediaPipeHandsRuntime,
+  type NormalizedLandmark,
+} from '../lib/mediapipeLoader'
+
+export type { NormalizedLandmark }
 
 export type HandsStatus =
   | { kind: 'idle' }
   | { kind: 'initializing' }
   | { kind: 'running' }
   | { kind: 'error'; message: string }
-
-export type NormalizedLandmark = { x: number; y: number; z?: number; visibility?: number }
 
 /** Screen-order slots (left → right in the mirrored selfie view). Up to two hands. */
 export type HandSlotLandmarks = [NormalizedLandmark[] | null, NormalizedLandmark[] | null]
@@ -107,8 +110,8 @@ function drawHandSkeleton(
   canvas: HTMLCanvasElement,
   objectFit: VideoObjectFitMode,
   HAND_CONNECTIONS: Array<[number, number]>,
-  drawConnectors: UseMediaPipeHandsDeps['drawConnectors'],
-  drawLandmarks: UseMediaPipeHandsDeps['drawLandmarks'],
+  drawConnectors: MediaPipeHandsRuntime['drawConnectors'],
+  drawLandmarks: MediaPipeHandsRuntime['drawLandmarks'],
 ) {
   const vw = video.videoWidth || 0
   const vh = video.videoHeight || 0
@@ -158,20 +161,6 @@ function drawHandSkeleton(
   }
 }
 
-type UseMediaPipeHandsDeps = {
-  drawConnectors: (
-    ctx: CanvasRenderingContext2D,
-    landmarks: NormalizedLandmark[],
-    connections: Array<[number, number]>,
-    style?: Record<string, unknown>,
-  ) => void
-  drawLandmarks: (
-    ctx: CanvasRenderingContext2D,
-    landmarks: NormalizedLandmark[],
-    style?: Record<string, unknown>,
-  ) => void
-}
-
 /**
  * Runs MediaPipe Hands on the provided <video> element and draws landmarks
  * into the provided <canvas> overlay.
@@ -208,44 +197,12 @@ export function useMediaPipeHands(
     objectFitRef.current = objectFit
   }, [objectFit])
 
-  const locateFile = useMemo(() => {
-    return (file: string) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
-  }, [])
-
   useEffect(() => {
     if (!enabled) return
 
     const video = videoRef.current
     const canvas = canvasRef.current
     if (!video || !canvas) return
-
-    const w = window as unknown as {
-      Hands?: new (opts: { locateFile?: (file: string) => string }) => {
-        setOptions: (opts: Record<string, unknown>) => void
-        onResults: (cb: (r: HandsResults) => void) => void
-        send: (input: { image: HTMLVideoElement }) => Promise<void>
-        close: () => void
-      }
-      HAND_CONNECTIONS?: Array<[number, number]>
-      drawConnectors?: UseMediaPipeHandsDeps['drawConnectors']
-      drawLandmarks?: UseMediaPipeHandsDeps['drawLandmarks']
-    }
-
-    const HandsCtor = w.Hands
-    const HAND_CONNECTIONS = w.HAND_CONNECTIONS
-    const drawConnectors = w.drawConnectors
-    const drawLandmarks = w.drawLandmarks
-
-    if (!HandsCtor || !HAND_CONNECTIONS || !drawConnectors || !drawLandmarks) {
-      queueMicrotask(() => {
-        setStatus({
-          kind: 'error',
-          message:
-            'MediaPipe libraries failed to load. Try restarting the dev server and reloading the page.',
-        })
-      })
-      return
-    }
 
     let cancelled = false
 
@@ -265,92 +222,109 @@ export function useMediaPipeHands(
         ? createResizeObserver(video, () => ensureCanvasSized())
         : () => {}
 
-    const hands = new HandsCtor({ locateFile })
-    handsRef.current = hands
-    hands.setOptions({
-      selfieMode: false,
-      maxNumHands: 2,
-      modelComplexity: 1,
-      minDetectionConfidence: 0.48,
-      minTrackingConfidence: 0.48,
-    })
+    void loadMediaPipeHandsRuntime()
+      .then((mp) => {
+        if (cancelled) return
 
-    hands.onResults((results: HandsResults) => {
-      if (!enabledRef.current) return
+        const { Hands: HandsCtor, HAND_CONNECTIONS, drawConnectors, drawLandmarks } = mp
 
-      ctx.setTransform(1, 0, 0, 1, 0, 0)
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
+        const hands = new HandsCtor({ locateFile: mediapipeHandsLocateFile })
+        handsRef.current = hands
+        hands.setOptions({
+          selfieMode: false,
+          maxNumHands: 2,
+          modelComplexity: 1,
+          minDetectionConfidence: 0.48,
+          minTrackingConfidence: 0.48,
+        })
 
-      const raw = results.multiHandLandmarks ?? []
-      const n = raw.length
-      const slots = assignHandsToSlots(raw, slotCenterRef.current)
+        hands.onResults((results: HandsResults) => {
+          if (!enabledRef.current) return
 
-      slotCenterRef.current = [
-        slots[0] ? mirroredMeanX(slots[0]) : null,
-        slots[1] ? mirroredMeanX(slots[1]) : null,
-      ]
+          ctx.setTransform(1, 0, 0, 1, 0, 0)
+          ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      for (const lm of raw) {
-        drawHandSkeleton(
-          ctx,
-          lm,
-          video,
-          canvas,
-          objectFitRef.current,
-          HAND_CONNECTIONS,
-          drawConnectors,
-          drawLandmarks,
-        )
-      }
+          const raw = results.multiHandLandmarks ?? []
+          const n = raw.length
+          const slots = assignHandsToSlots(raw, slotCenterRef.current)
 
-      if (n === 0) {
-        if (lastHasHandRef.current) {
-          setHasHand(false)
-          setRawHandCount(0)
-          setHandSlots([null, null])
-          setLandmarks(null)
-          lastHasHandRef.current = false
+          slotCenterRef.current = [
+            slots[0] ? mirroredMeanX(slots[0]) : null,
+            slots[1] ? mirroredMeanX(slots[1]) : null,
+          ]
+
+          for (const lm of raw) {
+            drawHandSkeleton(
+              ctx,
+              lm,
+              video,
+              canvas,
+              objectFitRef.current,
+              HAND_CONNECTIONS,
+              drawConnectors,
+              drawLandmarks,
+            )
+          }
+
+          if (n === 0) {
+            if (lastHasHandRef.current) {
+              setHasHand(false)
+              setRawHandCount(0)
+              setHandSlots([null, null])
+              setLandmarks(null)
+              lastHasHandRef.current = false
+            }
+            return
+          }
+
+          const now = performance.now()
+          if (now - lastLandmarksUpdateRef.current < 120) return
+          lastLandmarksUpdateRef.current = now
+
+          setHasHand(true)
+          lastHasHandRef.current = true
+          setRawHandCount(n)
+          const copy0 = slots[0] ? [...slots[0]] : null
+          const copy1 = slots[1] ? [...slots[1]] : null
+          setHandSlots([copy0, copy1])
+          setLandmarks(copy0 ?? copy1)
+        })
+
+        const tick = () => {
+          if (cancelled || !enabledRef.current) return
+
+          rafRef.current = window.requestAnimationFrame(tick)
+
+          if (video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return
+          if (sendingRef.current) return
+
+          sendingRef.current = true
+          ensureCanvasSized()
+
+          hands
+            .send({ image: video })
+            .catch((err) => {
+              if (cancelled) return
+              setStatus({ kind: 'error', message: friendlyInitError(err) })
+            })
+            .finally(() => {
+              sendingRef.current = false
+            })
         }
-        return
-      }
 
-      const now = performance.now()
-      if (now - lastLandmarksUpdateRef.current < 120) return
-      lastLandmarksUpdateRef.current = now
-
-      setHasHand(true)
-      lastHasHandRef.current = true
-      setRawHandCount(n)
-      const copy0 = slots[0] ? [...slots[0]] : null
-      const copy1 = slots[1] ? [...slots[1]] : null
-      setHandSlots([copy0, copy1])
-      setLandmarks(copy0 ?? copy1)
-    })
-
-    const tick = () => {
-      if (cancelled || !enabledRef.current) return
-
-      rafRef.current = window.requestAnimationFrame(tick)
-
-      if (video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return
-      if (sendingRef.current) return
-
-      sendingRef.current = true
-      ensureCanvasSized()
-
-      hands
-        .send({ image: video })
-        .catch((err) => {
-          if (cancelled) return
-          setStatus({ kind: 'error', message: friendlyInitError(err) })
+        rafRef.current = window.requestAnimationFrame(tick)
+        setStatus({ kind: 'running' })
+      })
+      .catch((err) => {
+        if (cancelled) return
+        setStatus({
+          kind: 'error',
+          message:
+            err instanceof Error && err.message
+              ? err.message
+              : 'MediaPipe libraries failed to load. Check your connection and reload the page.',
         })
-        .finally(() => {
-          sendingRef.current = false
-        })
-    }
-
-    rafRef.current = window.requestAnimationFrame(tick)
-    setStatus({ kind: 'running' })
+      })
 
     return () => {
       cancelled = true
@@ -375,7 +349,7 @@ export function useMediaPipeHands(
         handsRef.current = null
       }
     }
-  }, [canvasRef, enabled, locateFile, videoRef])
+  }, [canvasRef, enabled, videoRef])
 
   return { status, hasHand, rawHandCount, handSlots, landmarks }
 }
