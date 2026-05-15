@@ -304,9 +304,9 @@
   padding: 16px 18px;
   border-radius: 18px;
   border: 1px solid rgba(72, 62, 52, 0.1);
-  background: rgba(255, 255, 253, 0.72);
-  backdrop-filter: blur(10px);
-  WebkitBackdropFilter: blur(10px);
+  background: rgba(255, 255, 253, 0.82);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
 }
 
 .practiceStepsTitle {
@@ -525,9 +525,9 @@
   padding: 14px 18px 16px;
   border-radius: 18px;
   border: 1px solid rgba(72, 62, 52, 0.1);
-  background: rgba(255, 255, 253, 0.78);
-  backdrop-filter: blur(10px);
-  WebkitBackdropFilter: blur(10px);
+  background: rgba(255, 255, 253, 0.86);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -775,12 +775,12 @@
   color: rgba(248, 246, 242, 0.94);
   background: linear-gradient(
     165deg,
-    rgba(26, 26, 30, 0.62) 0%,
-    rgba(16, 16, 20, 0.52) 48%,
-    rgba(22, 20, 26, 0.58) 100%
+    rgba(26, 26, 30, 0.72) 0%,
+    rgba(16, 16, 20, 0.64) 48%,
+    rgba(22, 20, 26, 0.68) 100%
   );
-  backdrop-filter: blur(22px) saturate(145%);
-  -webkit-backdrop-filter: blur(22px) saturate(145%);
+  backdrop-filter: blur(36px) saturate(150%);
+  -webkit-backdrop-filter: blur(36px) saturate(150%);
   border: 1px solid rgba(255, 255, 255, 0.14);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.1),
@@ -1157,12 +1157,12 @@
   border-radius: 24px;
   background: linear-gradient(
     152deg,
-    rgba(255, 255, 255, 0.42) 0%,
-    rgba(255, 252, 246, 0.22) 42%,
-    rgba(244, 248, 252, 0.2) 100%
+    rgba(255, 255, 255, 0.56) 0%,
+    rgba(255, 252, 246, 0.38) 42%,
+    rgba(244, 248, 252, 0.34) 100%
   );
-  backdrop-filter: blur(44px) saturate(165%);
-  -webkit-backdrop-filter: blur(44px) saturate(165%);
+  backdrop-filter: blur(64px) saturate(170%);
+  -webkit-backdrop-filter: blur(64px) saturate(170%);
   border: 1px solid rgba(255, 255, 255, 0.52);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.65),
@@ -1223,12 +1223,12 @@
   border-radius: 20px;
   background: linear-gradient(
     152deg,
-    rgba(255, 255, 255, 0.55) 0%,
-    rgba(255, 252, 246, 0.36) 42%,
-    rgba(246, 248, 252, 0.34) 100%
+    rgba(255, 255, 255, 0.66) 0%,
+    rgba(255, 252, 246, 0.48) 42%,
+    rgba(246, 248, 252, 0.44) 100%
   );
-  backdrop-filter: blur(48px) saturate(185%);
-  -webkit-backdrop-filter: blur(48px) saturate(185%);
+  backdrop-filter: blur(72px) saturate(190%);
+  -webkit-backdrop-filter: blur(72px) saturate(190%);
   border-width: 1px;
   border-style: solid;
   border-color: rgba(255, 255, 255, 0.65);
@@ -1299,9 +1299,9 @@
 .webcamRitualHudPaused .webcamRitualHudCard {
   background: linear-gradient(
     152deg,
-    rgba(255, 255, 255, 0.32) 0%,
-    rgba(248, 246, 242, 0.18) 45%,
-    rgba(238, 242, 246, 0.16) 100%
+    rgba(255, 255, 255, 0.48) 0%,
+    rgba(248, 246, 242, 0.32) 45%,
+    rgba(238, 242, 246, 0.28) 100%
   );
   border-color: rgba(255, 255, 255, 0.42);
   box-shadow:
@@ -1620,9 +1620,9 @@
   max-width: 100%;
   padding: 4px 20px 12px;
   border-radius: 18px;
-  background: rgba(14, 16, 22, 0.48);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(14, 16, 22, 0.58);
+  backdrop-filter: blur(32px) saturate(150%);
+  -webkit-backdrop-filter: blur(32px) saturate(150%);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow:
     0 4px 24px rgba(0, 0, 0, 0.28),
@@ -1773,8 +1773,8 @@
     border-color 240ms ease,
     opacity 240ms ease,
     transform 240ms ease;
-  backdrop-filter: blur(10px);
-  WebkitBackdropFilter: blur(10px);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
 }
 
 .ritualPrimaryBtn:hover:not(:disabled) {
@@ -1821,8 +1821,8 @@
     background 240ms ease,
     border-color 240ms ease,
     opacity 240ms ease;
-  backdrop-filter: blur(10px);
-  WebkitBackdropFilter: blur(10px);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
 }
 
 .ritualGhostBtn:hover {
