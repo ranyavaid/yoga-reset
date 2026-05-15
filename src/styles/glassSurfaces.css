@@ -1,0 +1,157 @@
+/**
+ * Frosted glass surfaces — explicit static classes for reliable production CSS.
+ * Backdrop filters use separate rule blocks so minifiers retain both standard
+ * and -webkit- properties.
+ */
+
+.glassFrostRitualCard {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.glassFrostRitualCard > * {
+  position: relative;
+  z-index: 1;
+}
+
+.glassFrostRitualCard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    152deg,
+    rgba(255, 255, 255, 0.56) 0%,
+    rgba(255, 252, 246, 0.38) 42%,
+    rgba(244, 248, 252, 0.34) 100%
+  );
+}
+
+.glassFrostRitualCard::before {
+  backdrop-filter: blur(64px) saturate(170%);
+}
+
+.glassFrostRitualCard::before {
+  -webkit-backdrop-filter: blur(64px) saturate(170%);
+}
+
+.glassFrostRitualCard--strong::before {
+  background: linear-gradient(
+    152deg,
+    rgba(255, 255, 255, 0.66) 0%,
+    rgba(255, 252, 246, 0.48) 42%,
+    rgba(246, 248, 252, 0.44) 100%
+  );
+}
+
+.glassFrostRitualCard--strong::before {
+  backdrop-filter: blur(72px) saturate(190%);
+}
+
+.glassFrostRitualCard--strong::before {
+  -webkit-backdrop-filter: blur(72px) saturate(190%);
+}
+
+.glassFrostRitualCard--paused::before {
+  background: linear-gradient(
+    152deg,
+    rgba(255, 255, 255, 0.48) 0%,
+    rgba(248, 246, 242, 0.32) 45%,
+    rgba(238, 242, 246, 0.28) 100%
+  );
+}
+
+.glassFrostPill {
+  position: relative;
+  isolation: isolate;
+}
+
+.glassFrostPill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    165deg,
+    rgba(26, 26, 30, 0.72) 0%,
+    rgba(16, 16, 20, 0.64) 48%,
+    rgba(22, 20, 26, 0.68) 100%
+  );
+}
+
+.glassFrostPill::before {
+  backdrop-filter: blur(36px) saturate(150%);
+}
+
+.glassFrostPill::before {
+  -webkit-backdrop-filter: blur(36px) saturate(150%);
+}
+
+.glassFrostBreathPanel {
+  position: relative;
+  isolation: isolate;
+}
+
+.glassFrostBreathPanel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: rgba(14, 16, 22, 0.58);
+}
+
+.glassFrostBreathPanel::before {
+  backdrop-filter: blur(32px) saturate(150%);
+}
+
+.glassFrostBreathPanel::before {
+  -webkit-backdrop-filter: blur(32px) saturate(150%);
+}
+
+/* Breath HUD panel (class-only in CSS, no TSX change). */
+.webcamBreathPanel {
+  position: relative;
+  isolation: isolate;
+}
+
+.webcamBreathPanel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: rgba(14, 16, 22, 0.58);
+}
+
+.webcamBreathPanel::before {
+  backdrop-filter: blur(32px) saturate(150%);
+}
+
+.webcamBreathPanel::before {
+  -webkit-backdrop-filter: blur(32px) saturate(150%);
+}
+
+@supports not (
+  (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+) {
+  .glassFrostRitualCard::before {
+    background: rgba(255, 252, 248, 0.94);
+  }
+
+  .glassFrostPill::before {
+    background: rgba(22, 22, 26, 0.88);
+  }
+
+  .glassFrostBreathPanel::before,
+  .webcamBreathPanel::before {
+    background: rgba(14, 16, 22, 0.88);
+  }
+}

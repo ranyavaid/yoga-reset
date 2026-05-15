@@ -39,6 +39,7 @@ import {
   type MudraLandmark,
 } from './mudraAlignment'
 import './MudraPractice.css'
+import '../styles/glassSurfaces.css'
 
 /** Start practice when shape reads as ~“confident enough” (~75% on the meter). */
 const START_ALIGNMENT_MIN = 75
@@ -298,7 +299,7 @@ function HandAlignmentSlotChip(props: {
       aria-live="polite"
       aria-atomic="true"
     >
-      <span className={`handAlignGlassPill ${pillMod}`}>
+      <span className={`handAlignGlassPill glassFrostPill ${pillMod}`}>
         {statusChip.label} · {displayPct}%
       </span>
     </div>
@@ -339,7 +340,7 @@ function HandAlignmentHandChips(props: {
 
 function HandNoHandCallout(props: { message: string }) {
   return (
-    <div className="handAlignGlassPill handAlignGlassPill--anchored" role="status" aria-live="polite" aria-atomic="true">
+    <div className="handAlignGlassPill glassFrostPill handAlignGlassPill--anchored" role="status" aria-live="polite" aria-atomic="true">
       {props.message}
     </div>
   )
@@ -630,7 +631,7 @@ function WebcamCameraGateHud(props: {
   const { title, body, showEnableButton, onEnableCamera } = props
   return (
     <div className="webcamRitualHud webcamRitualHudReady webcamRitualHudCameraGate">
-      <div className="webcamRitualHudCard" aria-hidden="true">
+      <div className="webcamRitualHudCard glassFrostRitualCard glassFrostRitualCard--strong" aria-hidden="true">
         <div className="webcamCameraGateRow">
           <div className="webcamCameraGateCopy">
             <p className="webcamRitualHudReadySupporting webcamCameraGateText">{body}</p>
@@ -673,7 +674,7 @@ function WebcamReadyHud(props: {
 
   return (
     <div className="webcamRitualHud webcamRitualHudReady">
-      <div className="webcamRitualHudCard">
+      <div className="webcamRitualHudCard glassFrostRitualCard">
         <div className="webcamRitualHudReadyRow">
           <div className="webcamRitualHudReadyLead">
             <p className="webcamRitualHudReadySupporting">
@@ -705,7 +706,7 @@ function WebcamCompletedHud(props: { onStartAgain: () => void }) {
 
   return (
     <div className="webcamRitualHud webcamRitualHudReady">
-      <div className="webcamRitualHudCard">
+      <div className="webcamRitualHudCard glassFrostRitualCard">
         <div className="webcamRitualHudReadyRow">
           <div className="webcamRitualHudReadyLead">
             <p className="webcamRitualHudReadySupporting">

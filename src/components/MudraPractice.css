@@ -247,7 +247,7 @@
     0 14px 40px rgba(42, 36, 30, 0.05),
     0 3px 10px rgba(42, 36, 30, 0.03);
   backdrop-filter: none;
-  WebkitBackdropFilter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .practiceStepsCard.practiceStepsCardHow .practiceStepsTitle {
@@ -305,7 +305,13 @@
   border-radius: 18px;
   border: 1px solid rgba(72, 62, 52, 0.1);
   background: rgba(255, 255, 253, 0.82);
+}
+
+.practiceStepsCard {
   backdrop-filter: blur(18px) saturate(140%);
+}
+
+.practiceStepsCard {
   -webkit-backdrop-filter: blur(18px) saturate(140%);
 }
 
@@ -526,11 +532,17 @@
   border-radius: 18px;
   border: 1px solid rgba(72, 62, 52, 0.1);
   background: rgba(255, 255, 253, 0.86);
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.practicePanelHeader {
+  backdrop-filter: blur(18px) saturate(140%);
+}
+
+.practicePanelHeader {
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
 }
 
 .practiceHeaderTop {
@@ -734,11 +746,13 @@
   border: 1px solid rgba(72, 62, 52, 0.14);
   background: rgba(28, 26, 24, 0.92);
   box-shadow: 0 18px 48px rgba(42, 38, 34, 0.12);
+  isolation: isolate;
 }
 
 .webcamVideoLayer {
   position: absolute;
   inset: 0;
+  z-index: 0;
   width: 100%;
   height: 100%;
 }
@@ -773,14 +787,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   color: rgba(248, 246, 242, 0.94);
-  background: linear-gradient(
-    165deg,
-    rgba(26, 26, 30, 0.72) 0%,
-    rgba(16, 16, 20, 0.64) 48%,
-    rgba(22, 20, 26, 0.68) 100%
-  );
-  backdrop-filter: blur(36px) saturate(150%);
-  -webkit-backdrop-filter: blur(36px) saturate(150%);
   border: 1px solid rgba(255, 255, 255, 0.14);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.1),
@@ -1155,14 +1161,7 @@
   margin: 0 auto;
   padding: 16px 20px 20px;
   border-radius: 24px;
-  background: linear-gradient(
-    152deg,
-    rgba(255, 255, 255, 0.56) 0%,
-    rgba(255, 252, 246, 0.38) 42%,
-    rgba(244, 248, 252, 0.34) 100%
-  );
-  backdrop-filter: blur(64px) saturate(170%);
-  -webkit-backdrop-filter: blur(64px) saturate(170%);
+  background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.52);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.65),
@@ -1221,14 +1220,7 @@
   /* Same frosted language as alignment/start card, lifted slightly for dark video behind. */
   padding: 12px 16px 14px;
   border-radius: 20px;
-  background: linear-gradient(
-    152deg,
-    rgba(255, 255, 255, 0.66) 0%,
-    rgba(255, 252, 246, 0.48) 42%,
-    rgba(246, 248, 252, 0.44) 100%
-  );
-  backdrop-filter: blur(72px) saturate(190%);
-  -webkit-backdrop-filter: blur(72px) saturate(190%);
+  background: transparent;
   border-width: 1px;
   border-style: solid;
   border-color: rgba(255, 255, 255, 0.65);
@@ -1296,13 +1288,16 @@
   color: #ffffff;
 }
 
-.webcamRitualHudPaused .webcamRitualHudCard {
+.webcamRitualHudPaused .webcamRitualHudCard.glassFrostRitualCard::before {
   background: linear-gradient(
     152deg,
     rgba(255, 255, 255, 0.48) 0%,
     rgba(248, 246, 242, 0.32) 45%,
     rgba(238, 242, 246, 0.28) 100%
   );
+}
+
+.webcamRitualHudPaused .webcamRitualHudCard {
   border-color: rgba(255, 255, 255, 0.42);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.5),
@@ -1620,9 +1615,7 @@
   max-width: 100%;
   padding: 4px 20px 12px;
   border-radius: 18px;
-  background: rgba(14, 16, 22, 0.58);
-  backdrop-filter: blur(32px) saturate(150%);
-  -webkit-backdrop-filter: blur(32px) saturate(150%);
+  background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow:
     0 4px 24px rgba(0, 0, 0, 0.28),
@@ -1773,7 +1766,13 @@
     border-color 240ms ease,
     opacity 240ms ease,
     transform 240ms ease;
+}
+
+.ritualPrimaryBtn {
   backdrop-filter: blur(20px) saturate(140%);
+}
+
+.ritualPrimaryBtn {
   -webkit-backdrop-filter: blur(20px) saturate(140%);
 }
 
@@ -1821,7 +1820,13 @@
     background 240ms ease,
     border-color 240ms ease,
     opacity 240ms ease;
+}
+
+.ritualGhostBtn {
   backdrop-filter: blur(20px) saturate(140%);
+}
+
+.ritualGhostBtn {
   -webkit-backdrop-filter: blur(20px) saturate(140%);
 }
 
